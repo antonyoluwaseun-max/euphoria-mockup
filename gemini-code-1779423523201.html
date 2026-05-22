@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EUPHORIA — Niche For All</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;0,6..96,700;1,6..96,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --black: #000000;
+  --white: #ffffff;
+  --bg-grey: #f4f4f4;
+  --text-main: #000000;
+  --text-muted: #666666;
+  --border-color: #e5e5e5;
+  --serif: 'Bodoni Moda', serif;
+  --sans: 'Inter', Helvetica, sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  background:#fff;color:var(--text-main);
+  font-family:var(--sans);
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+  cursor:none;
+}
+
+/* ── CURSOR ── */
+#c-ring{
+  position:fixed;pointer-events:none;z-index:9999;
+  width:40px;height:40px;
+  border:1px solid rgba(0,0,0,0.35);
+  border-radius:50%;
+  transform:translate(-50%,-50%);
+  transition:width .4s cubic-bezier(.25,.46,.45,.94),
+             height .4s cubic-bezier(.25,.46,.45,.94),
+             background .4s, border-color .4s;
+  mix-blend-mode:multiply;
+}
+#c-dot{
+  position:fixed;pointer-events:none;z-index:9999;
+  width:5px;height:5px;background:#000;
+  border-radius:50%;transform:translate(-50%,-50%);
+}
+body.cur-hover #c-ring{
+  width:64px;height:64px;
+  background:rgba(0,0,0,0.05);
+  border-color:rgba(0,0,0,0.6);
+}
+
+/* ── WEBGL ── */
+#webgl{
+  position:fixed;top:0;left:0;
+  width:100vw;height:100vh;
+  z-index:0;pointer-events:none;
+  opacity:1;
+}
+
+/* ── NAV ── */
+nav{
+  position:fixed;top:0;left:0;width:100%;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:25px 40px;z-index:1000;
+  transition:background .4s,backdrop-filter .4s;
+}
+nav.scrolled{
+  background:rgba(255,255,255,0.92);
+  backdrop-filter:blur(16px);
+  -webkit-backdrop-filter:blur(16px);
+  border-bottom:1px solid var(--border-color);
+}
+.nav-left,.nav-right{display:flex;align-items:center;gap:24px;flex:1;}
+.nav-right{justify-content:flex-end;}
+.nav-item{
+  font-size:11px;font-weight:500;
+  color:var(--black);text-decoration:none;
+  display:flex;align-items:center;gap:7px;
+  letter-spacing:.08em;text-transform:uppercase;
+  transition:opacity .3s;
+}
+.nav-item:hover{opacity:.45;}
+.nav-item svg{width:14px;height:14px;fill:currentColor;}
+.logo{
+  flex:1;text-align:center;
+  font-family:var(--serif);font-size:30px;font-weight:700;
+  letter-spacing:.18em;text-decoration:none;
+  color:var(--black);text-transform:uppercase;
+}
+
+/* ── HERO ── */
+.hero{
+  height:100vh;width:100%;
+  display:flex;align-items:center;
+  position:relative;background:#fff;
+  padding:0 80px;overflow:hidden;
+  z-index:1;
+}
+.hero-container{
+  display:grid;
+  grid-template-columns:1.2fr 1fr;
+  width:100%;height:80vh;
+  align-items:center;margin-top:60px;gap:48px;
+}
+.hero-details{display:flex;flex-direction:column;justify-content:center;z-index:10;}
+.hero-eyebrow{
+  font-size:10px;text-transform:uppercase;
+  letter-spacing:.35em;color:var(--text-muted);
+  margin-bottom:20px;overflow:hidden;
+}
+.hero-eyebrow span{display:block;transform:translateY(100%);}
+.hero-title{
+  font-family:var(--serif);
+  font-size:clamp(44px,5.5vw,84px);
+  font-weight:400;line-height:1.05;
+  letter-spacing:-.02em;margin-bottom:32px;
+}
+.hero-title-line{display:block;overflow:hidden;}
+.hero-title-line span{display:block;transform:translateY(100%);}
+.hero-title em{font-style:italic;}
+.hero-action{overflow:hidden;}
+.hero-btn{
+  font-size:11px;text-transform:uppercase;
+  letter-spacing:.22em;color:var(--black);
+  text-decoration:none;display:inline-block;
+  padding-bottom:5px;border-bottom:1px solid #000;
+  transform:translateY(105%);
+  transition:opacity .3s;
+}
+.hero-btn:hover{opacity:.45;}
+.hero-image-box{
+  width:100%;height:100%;background:var(--bg-grey);
+  overflow:hidden;position:relative;
+  opacity:0;transform:scale(.95);
+}
+.hero-image-box img{
+  width:100%;height:100%;object-fit:cover;
+  object-position:center center;transform:scale(1.12);
+}
+
+/* ── EDITORIAL INTRO ── */
+.editorial-intro{
+  padding:120px 20px 60px;
+  text-align:center;max-width:740px;margin:0 auto;
+  position:relative;z-index:2;
+}
+.editorial-text{
+  font-size:16px;line-height:1.65;font-weight:400;
+  margin-bottom:45px;letter-spacing:.01em;
+}
+.category-tabs{display:flex;justify-content:center;gap:36px;}
+.tab{
+  font-size:13px;font-weight:500;color:var(--black);
+  text-decoration:none;text-transform:uppercase;
+  letter-spacing:.1em;padding-bottom:5px;
+  border-bottom:2px solid transparent;
+  transition:border-color .3s,opacity .3s;
+}
+.tab.active{border-bottom:2px solid #000;}
+.tab:hover{opacity:.55;}
+
+/* ── PRODUCT GRID ── */
+.product-grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  width:100%;background:#fff;
+  position:relative;z-index:2;
+}
+.product-card{
+  display:flex;flex-direction:column;
+  border-right:2px solid #fff;border-bottom:2px solid #fff;
+  cursor:none;background:var(--bg-grey);
+  text-decoration:none;
+  position:relative;overflow:hidden;
+}
+.product-card:nth-child(4n){border-right:none;}
+
+/* Prada-style color rendering */
+.image-container{
+  width:100%;aspect-ratio:1/1.15;
+  display:flex;align-items:center;justify-content:center;
+  padding:50px;overflow:hidden;
+  position:relative;
+}
+.image-container img{
+  width:100%;height:100%;object-fit:contain;
+  filter: contrast(1.02); /* Kept in full color */
+  transition:filter .55s ease,
+             transform .7s cubic-bezier(.25,.46,.45,.94);
+  mix-blend-mode:multiply; /* This blends the white backgrounds into the grey */
+}
+.product-card:hover .image-container img{
+  filter: contrast(1.05) saturate(1.1);
+  transform:scale(1.05);
+}
+
+/* color wash overlay that appears on hover */
+.card-overlay{
+  position:absolute;inset:0;
+  background:linear-gradient(135deg,
+    rgba(255,200,150,.10) 0%,
+    rgba(180,160,255,.08) 50%,
+    rgba(120,220,200,.08) 100%);
+  opacity:0;
+  transition:opacity .55s ease;
+  pointer-events:none;z-index:2;
+}
+.product-card:hover .card-overlay{opacity:1;}
+
+.product-info{
+  background:#fff;text-align:center;
+  padding:24px 20px;
+  border-top:1px solid var(--border-color);
+}
+.product-name{
+  font-size:12px;font-weight:400;
+  letter-spacing:.07em;color:var(--black);
+  text-transform:uppercase;margin-bottom:4px;
+}
+.product-price{
+  font-size:11px;color:var(--text-muted);
+  letter-spacing:.04em;
+}
+
+/* hover label */
+.card-hover-label{
+  position:absolute;bottom:80px;left:0;right:0;
+  display:flex;justify-content:center;
+  z-index:5;opacity:0;transform:translateY(10px);
+  transition:opacity .4s,transform .4s;
+}
+.card-hover-label span{
+  font-size:9px;letter-spacing:.3em;text-transform:uppercase;
+  background:#fff;border:1px solid #ddd;
+  padding:9px 22px;color:#000;
+}
+.product-card:hover .card-hover-label{opacity:1;transform:translateY(0);}
+
+/* ── MANIFESTO BAND ── */
+.manifesto-band{
+  padding:100px 40px;text-align:center;
+  border-top:1px solid var(--border-color);
+  border-bottom:1px solid var(--border-color);
+  background:#fff;position:relative;z-index:2;
+}
+.manifesto-band blockquote{
+  font-family:var(--serif);
+  font-size:clamp(22px,2.8vw,38px);
+  font-weight:400;font-style:italic;
+  line-height:1.55;max-width:800px;margin:0 auto 32px;
+  letter-spacing:.01em;
+}
+.manifesto-band a{
+  font-size:10px;letter-spacing:.3em;
+  text-transform:uppercase;color:#000;
+  text-decoration:none;padding-bottom:3px;
+  border-bottom:1px solid #000;
+  transition:opacity .3s;
+}
+.manifesto-band a:hover{opacity:.45;}
+
+/* ── EDITORIAL SPLIT ── */
+.editorial-split{
+  display:grid;grid-template-columns:1fr 1fr;
+  min-height:560px;
+  border-top:1px solid var(--border-color);
+  position:relative;z-index:2;
+}
+.split-img{overflow:hidden;background:var(--bg-grey);}
+.split-img img{
+  width:100%;height:100%;object-fit:cover;display:block;
+  filter:grayscale(100%);
+  transition:filter .7s ease,transform .9s cubic-bezier(.25,.46,.45,.94);
+}
+.split-img:hover img{
+  filter:grayscale(0%) saturate(1.1);
+  transform:scale(1.03);
+}
+.split-text{
+  padding:80px 64px;
+  display:flex;flex-direction:column;justify-content:center;
+  background:#fff;border-left:1px solid var(--border-color);
+}
+.split-eyebrow{
+  font-size:9px;letter-spacing:.45em;text-transform:uppercase;
+  color:#aaa;margin-bottom:20px;
+}
+.split-heading{
+  font-family:var(--serif);
+  font-size:clamp(30px,3.5vw,50px);
+  font-weight:400;line-height:1.1;
+  margin-bottom:24px;
+}
+.split-heading em{font-style:italic;}
+.split-body{
+  font-size:12px;font-weight:300;letter-spacing:.03em;
+  color:var(--text-muted);line-height:2;
+  max-width:340px;margin-bottom:36px;
+}
+.split-link{
+  font-size:10px;letter-spacing:.28em;text-transform:uppercase;
+  color:#000;text-decoration:none;
+  display:flex;align-items:center;gap:12px;
+  transition:opacity .3s;
+}
+.split-link:hover{opacity:.45;}
+.split-link::after{
+  content:'';display:inline-block;
+  width:28px;height:.5px;background:#000;
+  transition:width .4s;
+}
+.split-link:hover::after{width:48px;}
+
+/* ── CATEGORIES ── */
+.categories{
+  display:grid;grid-template-columns:repeat(3,1fr);
+  border-top:1px solid var(--border-color);
+  position:relative;z-index:2;
+}
+.cat-item{
+  border-right:1px solid var(--border-color);
+  overflow:hidden;cursor:none;
+}
+.cat-item:last-child{border-right:none;}
+.cat-img{width:100%;aspect-ratio:1/1.2;overflow:hidden;background:var(--bg-grey);}
+.cat-img img{
+  width:100%;height:100%;object-fit:cover;display:block;
+  filter:grayscale(100%);
+  transition:filter .6s ease,transform .8s cubic-bezier(.25,.46,.45,.94);
+}
+.cat-item:hover .cat-img img{
+  filter:grayscale(0%) saturate(1.15);
+  transform:scale(1.04);
+}
+.cat-label{
+  padding:18px 24px 22px;background:#fff;
+  border-top:1px solid var(--border-color);
+  display:flex;justify-content:space-between;align-items:center;
+}
+.cat-name{font-size:12px;font-weight:400;letter-spacing:.06em;color:#000;text-transform:uppercase;}
+.cat-arrow{font-size:18px;color:#aaa;transition:transform .3s,color .3s;}
+.cat-item:hover .cat-arrow{transform:translateX(4px);color:#000;}
+
+/* ── NEWSLETTER ── */
+.newsletter{
+  padding:100px 40px;text-align:center;
+  border-top:1px solid var(--border-color);
+  background:#fff;position:relative;z-index:2;
+}
+.nl-heading{
+  font-family:var(--serif);font-size:clamp(28px,3vw,44px);
+  font-weight:400;margin-bottom:16px;
+}
+.nl-heading em{font-style:italic;}
+.nl-sub{font-size:12px;color:var(--text-muted);margin-bottom:40px;letter-spacing:.04em;}
+.nl-form{display:flex;justify-content:center;gap:0;max-width:480px;margin:0 auto;}
+.nl-input{
+  flex:1;border:1px solid #ddd;border-right:none;
+  padding:14px 20px;font-family:var(--sans);font-size:11px;
+  letter-spacing:.05em;outline:none;
+  transition:border-color .3s;background:#fff;
+}
+.nl-input:focus{border-color:#000;}
+.nl-input::placeholder{color:#bbb;letter-spacing:.2em;text-transform:uppercase;font-size:9px;}
+.nl-btn{
+  font-size:9px;letter-spacing:.32em;text-transform:uppercase;
+  background:#000;color:#fff;border:1px solid #000;
+  padding:14px 28px;cursor:none;transition:background .3s;
+}
+.nl-btn:hover{background:#333;}
+
+/* ── FOOTER ── */
+footer{
+  border-top:1px solid var(--border-color);
+  padding:56px 40px 32px;
+  background:#fff;position:relative;z-index:2;
+}
+.footer-grid{
+  display:grid;grid-template-columns:2fr 1fr 1fr 1fr;
+  gap:48px;margin-bottom:56px;
+}
+.f-brand{font-family:var(--serif);font-size:28px;font-weight:700;letter-spacing:.12em;margin-bottom:14px;}
+.f-tagline{font-size:10px;color:var(--text-muted);letter-spacing:.06em;line-height:1.9;}
+.f-head{font-size:9px;letter-spacing:.4em;text-transform:uppercase;color:#000;margin-bottom:18px;font-weight:500;}
+.f-links{list-style:none;}
+.f-links li{margin-bottom:10px;}
+.f-links a{font-size:11px;font-weight:300;color:var(--text-muted);text-decoration:none;transition:color .3s;}
+.f-links a:hover{color:#000;}
+.footer-bottom{
+  display:flex;justify-content:space-between;align-items:center;
+  padding-top:24px;border-top:1px solid var(--border-color);
+}
+.f-copy{font-size:10px;color:#bbb;letter-spacing:.04em;}
+.f-socials{display:flex;gap:20px;}
+.f-socials a{font-size:10px;color:var(--text-muted);text-decoration:none;letter-spacing:.06em;transition:color .3s;}
+.f-socials a:hover{color:#000;}
+
+/* ── REVEAL ── */
+.js-reveal{opacity:0;transform:translateY(48px);will-change:transform,opacity;}
+.js-reveal-left{opacity:0;transform:translateX(-40px);will-change:transform,opacity;}
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar{width:2px;}
+::-webkit-scrollbar-track{background:#fff;}
+::-webkit-scrollbar-thumb{background:#ddd;}
+
+/* ── RESPONSIVE ── */
+@media(max-width:1024px){
+  .hero{padding:0 32px;}
+  .hero-container{grid-template-columns:1fr;height:auto;margin-top:100px;gap:32px;}
+  .hero-image-box{height:50vh;order:-1;}
+  .product-grid{grid-template-columns:repeat(2,1fr);}
+  .product-card:nth-child(2n){border-right:none;}
+  .editorial-split{grid-template-columns:1fr;}
+  .split-text{border-left:none;border-top:1px solid var(--border-color);padding:56px 32px;}
+  .footer-grid{grid-template-columns:1fr 1fr;gap:32px;}
+  .categories{grid-template-columns:1fr;}
+  .cat-item{border-right:none;border-bottom:1px solid var(--border-color);}
+}
+@media(max-width:768px){
+  nav{padding:18px 20px;}
+  .logo{font-size:22px;}
+  .nav-item span{display:none;}
+  .hero{padding:0 20px;}
+  .hero-title{font-size:36px;}
+  .image-container{padding:28px;}
+  body{cursor:auto;}
+  #c-ring,#c-dot{display:none;}
+}
+</style>
+</head>
+<body>
+
+<div id="c-ring"></div>
+<div id="c-dot"></div>
+<canvas id="webgl"></canvas>
+
+<nav id="navbar">
+  <div class="nav-left">
+    <a href="#" class="nav-item">
+      <svg viewBox="0 0 24 24"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>
+      <span>Menu</span>
+    </a>
+    <a href="#" class="nav-item">
+      <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+      <span>Search</span>
+    </a>
+  </div>
+  <a href="#" class="logo">EUPHORIA</a>
+  <div class="nav-right">
+    <a href="#" class="nav-item"><span>Contact us</span></a>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="hero-container">
+    <div class="hero-details">
+      <p class="hero-eyebrow"><span>Spring / Summer 2026 Collection</span></p>
+      <h1 class="hero-title">
+        <span class="hero-title-line"><span>The Balance of</span></span>
+        <span class="hero-title-line"><span><em>Form & Silence</em></span></span>
+      </h1>
+      <div class="hero-action">
+        <a href="#lookbook" class="hero-btn">Discover Drop 01</a>
+      </div>
+    </div>
+    <div class="hero-image-box" id="heroBox">
+      <img id="heroImg" src="https://images.unsplash.com/photo-1509631179647-0177331693ae?q=80&w=1200&auto=format&fit=crop" alt="Euphoria SS26 Editorial Model">
+    </div>
+  </div>
+</section>
+
+<section class="product-grid" id="lookbook">
+  <a href="#" class="product-card">
+    <div class="image-container">
+      <img src="https://images.unsplash.com/photo-1584916201218-f4242ceb4809?q=80&w=800&auto=format&fit=crop" alt="Euphoria Leather">
+    </div>
+    <div class="card-overlay"></div>
+    <div class="card-hover-label"><span>View Piece</span></div>
+    <div class="product-info">
+      <p class="product-name">Euphoria Leather</p>
+      <p class="product-price">$340</p>
+    </div>
+  </a>
+  <a href="#" class="product-card">
+    <div class="image-container">
+      <img src="https://images.unsplash.com/photo-1591561954557-26941169b49e?q=80&w=800&auto=format&fit=crop" alt="Euphoria Route">
+    </div>
+    <div class="card-overlay"></div>
+    <div class="card-hover-label"><span>View Piece</span></div>
+    <div class="product-info">
+      <p class="product-name">Euphoria Route</p>
+      <p class="product-price">$310</p>
+    </div>
+  </a>
+  <a href="#" class="product-card">
+    <div class="image-container">
+      <img src="https://images.unsplash.com/photo-1614179689702-355949cd0e18?q=80&w=800&auto=format&fit=crop" alt="Euphoria Summer">
+    </div>
+    <div class="card-overlay"></div>
+    <div class="card-hover-label"><span>View Piece</span></div>
+    <div class="product-info">
+      <p class="product-name">Euphoria Summer</p>
+      <p class="product-price">$280</p>
+    </div>
+  </a>
+  <a href="#" class="product-card">
+    <div class="image-container">
+      <img src="https://images.unsplash.com/photo-1590874103328-eac38a683ce7?q=80&w=800&auto=format&fit=crop" alt="Euphoria Explore">
+    </div>
+    <div class="card-overlay"></div>
+    <div class="card-hover-label"><span>View Piece</span></div>
+    <div class="product-info">
+      <p class="product-name">Euphoria Explore</p>
+      <p class="product-price">$195</p>
+    </div>
+  </a>
+</section>
+
+<section class="editorial-intro js-reveal">
+  <p class="editorial-text">Lightness and texture blend in a natural balance — capturing the energy of the minimalist aesthetic in the debut Euphoria collection.</p>
+  <div class="category-tabs">
+    <a href="#" class="tab active">Women</a>
+    <a href="#" class="tab">Men</a>
+    <a href="#" class="tab">Unisex</a>
+  </div>
+</section>
+
+<section class="product-grid">
+  <a href="#" class="product-card">
+    <div class="image-container">
+      <img src="https://images.unsplash.com/photo-1548036328-c9fa89d128fa?q=80&w=800&auto=format&fit=crop" alt="Concept Tote">
+    </div>
+    <div class="card-overlay"></div>
+    <div class="card-hover-label"><span>View Piece</span></div>
+    <div class="product-info">
+      <p class="product-name">Concept Tote</p>
+      <p class="product-price">$420</p>
+    </div>
+  </a>
+  <a href="#" class="product-card">
+    <div class="image-container">
+      <img src="https://images.unsplash.com/photo-1515347619362-e67417f7353f?q=80&w=800&auto=format&fit=crop" alt="Summer Silhouette">
+    </div>
+    <div class="card-overlay"></div>
+    <div class="card-hover-label"><span>View Piece</span></div>
+    <div class="product-info">
+      <p class="product-name">Summer Silhouette</p>
+      <p class="product-price">$560</p>
+    </div>
+  </a>
+  <a href="#" class="product-card">
+    <div class="image-container">
+      <img src="https://images.unsplash.com/photo-1603487742131-4160ec999306?q=80&w=800&auto=format&fit=crop" alt="Platform Sandals">
+    </div>
+    <div class="card-overlay"></div>
+    <div class="card-hover-label"><span>View Piece</span></div>
+    <div class="product-info">
+      <p class="product-name">Platform Sandals</p>
+      <p class="product-price">$220</p>
+    </div>
+  </a>
+  <a href="#" class="product-card">
+    <div class="image-container">
+      <img src="https://images.unsplash.com/photo-1588850561407-ed78c282e89b?q=80&w=800&auto=format&fit=crop" alt="Raffia Bucket Hat">
+    </div>
+    <div class="card-overlay"></div>
+    <div class="card-hover-label"><span>View Piece</span></div>
+    <div class="product-info">
+      <p class="product-name">Raffia Bucket Hat</p>
+      <p class="product-price">$135</p>
+    </div>
+  </a>
+</section>
+
+<div class="manifesto-band js-reveal">
+  <blockquote>"A collection built to be felt before it is seen — designed for the person who already knows what they want."</blockquote>
+  <a href="#">Read the story</a>
+</div>
+
+<section class="editorial-split">
+  <div class="split-img">
+    <img src="https://images.unsplash.com/photo-1490481651871-ab68de25d43d?q=80&w=1000&auto=format&fit=crop" alt="Editorial">
+  </div>
+  <div class="split-text js-reveal-left">
+    <p class="split-eyebrow">The philosophy</p>
+    <h2 class="split-heading">Worn by<br>everyone.<br><em>Owned by few.</em></h2>
+    <p class="split-body">Niche in its vision. Universal in its reach. Every piece is engineered to feel like it was made for you — no excess, no compromise.</p>
+    <a href="#" class="split-link">Explore the collection</a>
+  </div>
+</section>
+
+<section class="categories">
+  <div class="cat-item">
+    <div class="cat-img">
+      <img src="https://images.unsplash.com/photo-1539109136881-3be0616acf4b?q=80&w=700&auto=format&fit=crop" alt="Outerwear">
+    </div>
+    <div class="cat-label">
+      <span class="cat-name">Outerwear</span>
+      <span class="cat-arrow">→</span>
+    </div>
+  </div>
+  <div class="cat-item">
+    <div class="cat-img">
+      <img src="https://images.unsplash.com/photo-1509631179647-0177331693ae?q=80&w=700&auto=format&fit=crop" alt="Tops">
+    </div>
+    <div class="cat-label">
+      <span class="cat-name">Tops & Shirts</span>
+      <span class="cat-arrow">→</span>
+    </div>
+  </div>
+  <div class="cat-item">
+    <div class="cat-img">
+      <img src="https://images.unsplash.com/photo-1550614000-4b95d4662d5f?q=80&w=700&auto=format&fit=crop" alt="Sets">
+    </div>
+    <div class="cat-label">
+      <span class="cat-name">Sets & Coords</span>
+      <span class="cat-arrow">→</span>
+    </div>
+  </div>
+</section>
+
+<section class="newsletter js-reveal">
+  <h2 class="nl-heading">Be the first to <em>know.</em></h2>
+  <p class="nl-sub">New drops. Exclusive access. No noise.</p>
+  <div class="nl-form">
+    <input type="email" class="nl-input" placeholder="Your email address">
+    <button class="nl-btn">Subscribe</button>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-grid">
+    <div>
+      <p class="f-brand">EUPHORIA</p>
+      <p class="f-tagline">Niche for all.<br>SS 2026 — Debut Collection.</p>
+    </div>
+    <div>
+      <p class="f-head">Collections</p>
+      <ul class="f-links">
+        <li><a href="#">SS 2026</a></li>
+        <li><a href="#">Lookbook</a></li>
+        <li><a href="#">New Arrivals</a></li>
+      </ul>
+    </div>
+    <div>
+      <p class="f-head">Customer</p>
+      <ul class="f-links">
+        <li><a href="#">Shipping & Returns</a></li>
+        <li><a href="#">Size Guide</a></li>
+        <li><a href="#">Contact Us</a></li>
+      </ul>
+    </div>
+    <div>
+      <p class="f-head">Follow</p>
+      <ul class="f-links">
+        <li><a href="#">Instagram</a></li>
+        <li><a href="#">Pinterest</a></li>
+        <li><a href="#">Newsletter</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span class="f-copy">© 2026 Euphoria Studios — All rights reserved</span>
+    <div class="f-socials">
+      <a href="#">Instagram</a>
+      <a href="#">Pinterest</a>
+    </div>
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script>
+gsap.registerPlugin(ScrollTrigger);
+
+/* ── CURSOR ── */
+const ring=document.getElementById('c-ring');
+const dot=document.getElementById('c-dot');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;});
+(function tick(){
+  rx+=(mx-rx)*.1;ry+=(my-ry)*.1;
+  ring.style.left=rx+'px';ring.style.top=ry+'px';
+  dot.style.left=mx+'px';dot.style.top=my+'px';
+  requestAnimationFrame(tick);
+})();
+document.querySelectorAll('a,button,.product-card,.cat-item').forEach(el=>{
+  el.addEventListener('mouseenter',()=>document.body.classList.add('cur-hover'));
+  el.addEventListener('mouseleave',()=>document.body.classList.remove('cur-hover'));
+});
+
+/* ── THREE.JS HERO BACKGROUND ── */
+const canvas=document.getElementById('webgl');
+const renderer=new THREE.WebGLRenderer({canvas,alpha:true,antialias:true});
+renderer.setSize(innerWidth,innerHeight);
+renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+
+const scene=new THREE.Scene();
+const camera=new THREE.PerspectiveCamera(65,innerWidth/innerHeight,.1,1000);
+camera.position.z=7;
+
+// Subtle warm wireframe — black on white, very faint
+const geo=new THREE.PlaneGeometry(26,14,52,52);
+const mat=new THREE.MeshBasicMaterial({
+  color:0xbbbbbb,wireframe:true,
+  transparent:true,opacity:.13
+});
+const mesh=new THREE.Mesh(geo,mat);
+mesh.rotation.x=-Math.PI/3.4;
+scene.add(mesh);
+
+let mxN=0,myN=0;
+document.addEventListener('mousemove',e=>{
+  mxN=(e.clientX-innerWidth/2)*.0006;
+  myN=(e.clientY-innerHeight/2)*.0006;
+});
+
+const clk=new THREE.Clock();
+// WebGL visible only on hero, fades as you scroll
+let glOpacity=1;
+
+(function renderGL(){
+  requestAnimationFrame(renderGL);
+  if(glOpacity<=0){renderer.render(scene,camera);return;}
+  const t=clk.getElapsedTime();
+  const pos=mesh.geometry.attributes.position;
+  for(let i=0;i<pos.count;i++){
+    const x=pos.getX(i),y=pos.getY(i);
+    pos.setZ(i,Math.sin(x*1.1+t*.5)*.55+Math.cos(y*1.1+t*.4)*.35);
+  }
+  pos.needsUpdate=true;
+  mesh.rotation.y+=(mxN-mesh.rotation.y)*.04;
+  mesh.rotation.x+=((myN-(Math.PI/3.4))-mesh.rotation.x)*.04;
+  renderer.render(scene,camera);
+})();
+
+window.addEventListener('resize',()=>{
+  camera.aspect=innerWidth/innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(innerWidth,innerHeight);
+});
+
+// Fade WebGL as hero exits viewport
+ScrollTrigger.create({
+  trigger:'.hero',
+  start:'top top',
+  end:'bottom top',
+  scrub:true,
+  onUpdate:self=>{
+    glOpacity=1-self.progress;
+    canvas.style.opacity=glOpacity;
+  }
+});
+
+/* ── NAV SCROLL ── */
+window.addEventListener('scroll',()=>{
+  document.getElementById('navbar').classList.toggle('scrolled',scrollY>50);
+});
+
+/* ── HERO ENTRANCE ── */
+window.addEventListener('DOMContentLoaded',()=>{
+  const tl=gsap.timeline();
+  tl.to('#heroBox',{opacity:1,scale:1,duration:1.5,ease:'power3.inOut'});
+  gsap.to('#heroImg',{scale:1.02,duration:7,ease:'power1.out',delay:.3});
+  tl.to('.hero-title-line span',{y:'0%',duration:1.3,stagger:.14,ease:'expo.out'},'-=.9');
+  tl.to('.hero-eyebrow span, .hero-btn',{y:'0%',duration:1,ease:'power3.out'},'-=.7');
+});
+
+/* ── SCROLL REVEALS ── */
+gsap.utils.toArray('.js-reveal').forEach(el=>{
+  gsap.to(el,{
+    opacity:1,y:0,duration:1.1,ease:'power3.out',
+    scrollTrigger:{trigger:el,start:'top 82%',toggleActions:'play none none none'}
+  });
+});
+gsap.utils.toArray('.js-reveal-left').forEach(el=>{
+  gsap.to(el,{
+    opacity:1,x:0,duration:1.2,ease:'power3.out',
+    scrollTrigger:{trigger:el,start:'top 80%',toggleActions:'play none none none'}
+  });
+});
+
+/* Product cards stagger in */
+gsap.utils.toArray('.product-card').forEach((card,i)=>{
+  gsap.fromTo(card,
+    {opacity:0,y:40},
+    {opacity:1,y:0,duration:.9,ease:'power3.out',
+     delay:(i%4)*.1,
+     scrollTrigger:{trigger:card,start:'top 88%',toggleActions:'play none none none'}}
+  );
+});
+
+/* Category items */
+gsap.utils.toArray('.cat-item').forEach((el,i)=>{
+  gsap.fromTo(el,
+    {opacity:0,y:32},
+    {opacity:1,y:0,duration:.9,ease:'power3.out',delay:i*.12,
+     scrollTrigger:{trigger:el,start:'top 86%',toggleActions:'play none none none'}}
+  );
+});
+
+/* Manifesto parallax */
+gsap.to('.manifesto-band blockquote',{
+  y:-20,ease:'none',
+  scrollTrigger:{trigger:'.manifesto-band',start:'top bottom',end:'bottom top',scrub:1.5}
+});
+
+/* Editorial split image parallax */
+gsap.to('.split-img img',{
+  y:-28,ease:'none',
+  scrollTrigger:{trigger:'.editorial-split',start:'top bottom',end:'bottom top',scrub:1.8}
+});
+</script>
+</body>
+</html>
